@@ -102,9 +102,10 @@ function routeToPathDef(route: Route, schemas: any[]) {
 
     if (validation.payload) {
       const joi = validation.payload;
-      const name = `${operationId}Payload`;
+      const name = `${nameToRef(operationId)}Payload`;
       const ref = createOpenAPIDef(name, joi, schemas);
       requestBody = {
+        description: `${operationId} payload`,
         content: {
           'application/json': {
             schema: {
@@ -133,7 +134,7 @@ function routeToPathDef(route: Route, schemas: any[]) {
 // adds the definition to the definitons array, returns the reference
 function createOpenAPIDef(name: string, joi: SchemaLike, schemas: any[]) {
   const ref = name;
-  const def = joi2json(joi);
+  const def = _.omit(joi2json(joi), 'patterns');
   schemas.push({ ref, ...def });
   // @TODO: read label property for better ref control
   return ref;
