@@ -11,6 +11,7 @@ Inspired by Hapi and [hapi-swagger](https://github.com/glennjones/hapi-swagger)
 - [ ] Knex migrations & query builder on PostgreSQL
 - [ ] Example CRUD API
 - [ ] Tests with jest
+- [ ] Local Swagger UI to view OpenAPI docs
 - [ ] Travis CI
 - [ ] Typescript configuration with sensible defaults
 - [ ] Prettier + Tslint

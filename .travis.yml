@@ -1,0 +1,19 @@
+language: node_js
+sudo: required
+services:
+  - postgresql
+node_js:
+  - '8.11.4'
+before_install:
+  - npm i -g npm@6.1.0
+install:
+  - npm install --silent -g serverless
+  - npm install --silent
+  - npm run build
+before_script:
+  - psql -c 'create database test;' -U postgres
+  - npm run migrate
+  - npm run seed
+after_success:
+  - npm run deploy:qa
+  - npm run migrate:qa

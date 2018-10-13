@@ -1,6 +1,6 @@
 {
   "name": "serverless-openapi-joi-boilerplate",
-  "description": "Boilerplate serverless API project with generated OpenAPI docs (formerly known as swagger) from Joi validation",
+  "description": "Boilerplate serverless API project with generated OpenAPI docs from Joi validation",
   "author": "Viljami Kuosmanen <viljami@avoinsorsa.fi>",
   "version": "0.1.0",
   "license": "MIT",
@@ -12,7 +12,61 @@
     "openapi",
     "swagger"
   ],
+  "engines": {
+    "node": "^8.12.0",
+    "npm": "^6.4.1"
+  },
   "scripts": {
-    "test": "jest"
+    "build": "tsc",
+    "watch-build": "tsc -w",
+    "watch-server": "nodemon -w serverless.yml --delay 2 -w dist/ -x 'serverless offline start --stage local'",
+    "dev": "concurrently -k -p '[{name}]' -n 'TypeScript,Serverless' -c 'yellow.bold,cyan.bold,green.bold' 'npm run watch-build' 'npm run watch-server'",
+    "test": "NODE_ENV=test jest -i",
+    "lint": "tslint --format prose --project .",
+    "prettier": "prettier --write src/**",
+    "swaggerui": "npm run swaggerui:start",
+    "swaggerui:start": "docker-compose up -d swaggerui && echo \"Swagger UI: http://localhost:$SWAGGERUI_PORT\"",
+    "swaggerui:stop": "docker-compose stop swaggerui",
+    "seed": "knex seed:run",
+    "migrate:local": "knex migrate:latest",
+    "migrate:dev": "serverless invoke --function migrate --stage dev",
+    "migrate": "npm run migrate:local",
+    "pre-deploy": "npm run lint && npm run build",
+    "deploy-api:dev": "serverless deploy function --function api --stage dev",
+    "deploy-api": "npm run deploy-api:dev",
+    "deploy:dev": "serverless deploy --stage dev",
+    "deploy": "npm run deploy:dev"
+  },
+  "dependencies": {
+    "boom": "^7.2.0",
+    "joi": "^13.7.0",
+    "joi-to-json-schema": "^3.4.0",
+    "knex": "^0.15.2",
+    "lodash": "^4.17.11",
+    "pg": "^7.5.0",
+    "source-map-support": "^0.5.9",
+    "winston": "^3.1.0"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.13",
+    "@types/boom": "^7.2.0",
+    "@types/jest": "^23.3.5",
+    "@types/joi": "^13.6.1",
+    "@types/knex": "^0.14.26",
+    "@types/lodash": "^4.14.117",
+    "@types/node": "^10.11.7",
+    "@types/winston": "^2.4.4",
+    "concurrently": "^4.0.1",
+    "jest": "^23.6.0",
+    "nodemon": "^1.18.4",
+    "openapi-schema-validation": "^0.4.2",
+    "prettier": "^1.14.3",
+    "serverless": "^1.32.0",
+    "serverless-offline": "^3.27.0",
+    "ts-jest": "^23.10.4",
+    "ts-node": "^7.0.1",
+    "tslint": "^5.11.0",
+    "tslint-microsoft-contrib": "^5.2.1",
+    "typescript": "^3.1.3"
   }
 }
