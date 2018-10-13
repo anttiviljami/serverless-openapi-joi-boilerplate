@@ -14,6 +14,6 @@ before_script:
   - psql -c 'create database test;' -U postgres
   - npm run migrate
   - npm run seed
-after_success:
-  - npm run deploy:dev
-  - npm run migrate:dev
+#after_success:
+#  - npm run deploy:dev
+#  - npm run migrate:dev

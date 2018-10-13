@@ -2,7 +2,6 @@ import _ from 'lodash';
 import { SchemaLike } from 'joi';
 import joi2json from 'joi-to-json-schema';
 import { Route } from '../util/router';
-import { createLogger } from '../util/logger';
 
 export function getOpenAPISpec(routes: Route[]) {
   const OPENAPI_VERSION = '3.0.0';

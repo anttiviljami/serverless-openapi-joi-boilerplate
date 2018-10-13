@@ -1,5 +1,5 @@
 # Serverless OpenAPI Joi Boilerplate Project
-[![License](http://img.shields.io/:license-mit-blue.svg)](http://anttiviljami.mit-license.org)
+[![Build Status](https://travis-ci.org/anttiviljami/serverless-openapi-joi-boilerplate.svg?branch=master)](https://travis-ci.org/anttiviljami/serverless-openapi-joi-boilerplate) [![License](http://img.shields.io/:license-mit-blue.svg)](http://anttiviljami.mit-license.org)
 
 Boilerplate serverless API project with generated OpenAPI docs (formerly known as swagger) from Joi validation.
 
