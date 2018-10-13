@@ -32,3 +32,10 @@ export async function addPet(pet: PetPayload): Promise<PetRow> {
     .returning('*');
   return _.first(res);
 }
+
+export async function deletePet(id: number): Promise<any> {
+  const res = await knex('pets')
+    .where({ id })
+    .delete();
+  return res;
+}

@@ -1,6 +1,6 @@
 import Boom from 'boom';
 import { HandlerContext } from '../util/router';
-import { getPet, getAllPets, addPet } from '../core/pet-core';
+import { getPet, getAllPets, addPet, deletePet } from '../core/pet-core';
 
 export async function getPetById(event: HandlerContext) {
   const { pathParameters } = event;
@@ -21,4 +21,11 @@ export async function createPet(event: HandlerContext) {
   const { payload } = event;
   const pet = await addPet(payload);
   return { result: pet };
+}
+
+export async function deletePetById(event: HandlerContext) {
+  const { pathParameters } = event;
+  const { id } = pathParameters;
+  const result = await deletePet(Number(id));
+  return { result };
 }
