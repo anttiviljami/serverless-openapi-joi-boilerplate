@@ -133,9 +133,8 @@ function routeToPathDef(route: Route, schemas: any[]) {
 
 // adds the definition to the definitons array, returns the reference
 function createOpenAPIDef(name: string, joi: SchemaLike, schemas: any[]) {
-  const ref = name;
-  const def = _.omit(joi2json(joi), 'patterns');
-  schemas.push({ ref, ...def });
-  // @TODO: read label property for better ref control
+  const def = joi2json(joi);
+  const ref = def.title || name;
+  schemas.push({ ref, ..._.omit(def, ['title', 'patterns']) });
   return ref;
 }

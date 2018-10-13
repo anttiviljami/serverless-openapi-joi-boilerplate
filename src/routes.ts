@@ -6,7 +6,7 @@ import { Route } from './util/router';
 import { getPets, getPetById, createPet, deletePetById } from './handler/pet-handler';
 
 const auth = {
-  'x-api-key': Joi.string().required(),
+  'x-api-key': Joi.string().required().label('ApiKey'),
 };
 
 const routes: Route[] = [
