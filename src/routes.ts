@@ -3,7 +3,7 @@ import Joi from 'joi';
 
 import { Route } from './util/router';
 
-import { getPets, getPetById } from './handler/pet-handler';
+import { getPets, getPetById, createPet } from './handler/pet-handler';
 
 const auth = {
   'x-api-key': Joi.string().required(),
@@ -37,6 +37,21 @@ const routes: Route[] = [
           .integer()
           .required(),
       },
+    },
+  },
+  {
+    method: 'POST',
+    path: '/pets',
+    operationId: 'createPet',
+    handler: createPet,
+    summary: 'Create pet',
+    description: 'Crete a new pet into the database',
+    tags: ['api'],
+    validation: {
+      headers: { ...auth },
+      payload: Joi.object({
+        name: Joi.string().required(),
+      }),
     },
   },
 ];

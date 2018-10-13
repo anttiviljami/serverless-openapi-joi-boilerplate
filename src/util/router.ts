@@ -8,6 +8,10 @@ import { getOpenAPISpec } from '../core/openapi-core';
 import { createLogger } from './/logger';
 const logger = createLogger(__filename);
 
+export interface HandlerContext extends APIGatewayProxyEvent {
+  payload: any;
+}
+
 export interface Route {
   method: string;
   path: string;
@@ -27,7 +31,7 @@ export interface Route {
       content?: any;
     };
   };
-  handler: (event: Partial<APIGatewayProxyEvent>) => Promise<any>;
+  handler: (event: Partial<HandlerContext>) => Promise<any>;
 }
 
 export async function routeEvent(event: Partial<APIGatewayProxyEvent>, routes: Route[]): Promise<any> {
@@ -100,5 +104,5 @@ async function handleRoute(event: Partial<APIGatewayProxyEvent>, routes: Route[]
   }
 
   // pass event to handler
-  return handler(event);
+  return handler({ ...event, payload });
 }

@@ -7,6 +7,7 @@ exports.seed = async (knex: Knex) => {
   const rows: PetRow[] = [
     {
       id: 1,
+      name: 'Onni',
     },
   ];
   await BPromise.mapSeries(rows, (row) => upsert(knex, 'pets', row));

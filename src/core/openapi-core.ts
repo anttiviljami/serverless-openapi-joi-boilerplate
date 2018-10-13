@@ -63,6 +63,7 @@ function routeToPathDef(route: Route, schemas: any[]) {
     ...route.responses || {},
   };
 
+  let requestBody;
   const parameters: any[] = [];
 
   if (validation) {
@@ -98,6 +99,22 @@ function routeToPathDef(route: Route, schemas: any[]) {
         });
       });
     }
+
+    if (validation.payload) {
+      const joi = validation.payload;
+      const name = `${operationId}Payload`;
+      const ref = createOpenAPIDef(name, joi, schemas);
+      requestBody = {
+        content: {
+          'application/json': {
+            schema: {
+              $ref: `#/components/schemas/${ref}`,
+            },
+            examples: {}, // @TODO
+          },
+        },
+      };
+    }
   }
 
   return {
@@ -109,6 +126,7 @@ function routeToPathDef(route: Route, schemas: any[]) {
     tags,
     responses,
     parameters,
+    requestBody,
   };
 }
 

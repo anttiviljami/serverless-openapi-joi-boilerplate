@@ -1,8 +1,8 @@
 import Boom from 'boom';
-import { APIGatewayProxyEvent } from 'aws-lambda';
-import { getPet, getAllPets } from '../core/pet-core';
+import { HandlerContext } from '../util/router';
+import { getPet, getAllPets, addPet } from '../core/pet-core';
 
-export async function getPetById(event: Partial<APIGatewayProxyEvent>) {
+export async function getPetById(event: HandlerContext) {
   const { pathParameters } = event;
   const { id } = pathParameters;
   const pet = await getPet(Number(id));
@@ -12,7 +12,13 @@ export async function getPetById(event: Partial<APIGatewayProxyEvent>) {
   return { result: pet };
 }
 
-export async function getPets(event: Partial<APIGatewayProxyEvent>) {
+export async function getPets(event: HandlerContext) {
   const pets = await getAllPets();
   return { result: pets };
+}
+
+export async function createPet(event: HandlerContext) {
+  const { payload } = event;
+  const pet = await addPet(payload);
+  return { result: pet };
 }

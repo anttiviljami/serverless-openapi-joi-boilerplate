@@ -39,6 +39,12 @@ functions:
           private: true
           cors: true
           timeout: 30
+      - http:
+          path: pets
+          method: post
+          private: true
+          cors: true
+          timeout: 30
 
 package:
   exclude:
