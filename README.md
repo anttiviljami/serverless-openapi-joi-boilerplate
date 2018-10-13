@@ -5,16 +5,16 @@ Boilerplate serverless API project with generated OpenAPI docs (formerly known a
 
 Inspired by Hapi and [hapi-swagger](https://github.com/glennjones/hapi-swagger)
 
-- [ ] **Auto-generated OpenAPI docs from code** at endpoint `/swagger.json` (configurable)
-- [ ] **Joi validated requests**
-- [ ] Local development with serverless-offline + Docker
-- [ ] Knex migrations & query builder on PostgreSQL
+- [x] **Auto-generated OpenAPI docs from code** at endpoint `/swagger.json` (configurable)
+- [x] **Joi validated requests**
+- [x] Local development with serverless-offline + Docker
+- [x] Knex migrations & query builder on PostgreSQL
 - [ ] Example CRUD API
-- [ ] Tests with jest
-- [ ] Local Swagger UI to view OpenAPI docs
-- [ ] Travis CI
-- [ ] Typescript configuration with sensible defaults
-- [ ] Prettier + Tslint
+- [x] Tests with jest
+- [x] Local Swagger UI to view OpenAPI docs
+- [x] Travis CI configuration for serverless deployment
+- [x] Typescript configuration with sensible defaults
+- [x] Prettier + Tslint
 
 ## Setup & Development
 
