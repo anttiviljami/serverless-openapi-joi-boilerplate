@@ -3,25 +3,25 @@ import Joi from 'joi';
 
 import { Route } from './util/router';
 
-import { getPets } from './core/pet-core';
+import { getPets, getPetById } from './handler/pet-handler';
 
 const routes: Route[] = [
   {
     method: 'GET',
     path: '/pets',
     operationId: 'getPets',
+    handler: getPets,
     summary: 'List pets',
     description: 'Returns all pets in database',
-    handler: getPets,
     tags: ['api'],
   },
   {
     method: 'GET',
     path: '/pets/{id}',
     operationId: 'getPetById',
+    handler: getPetById,
     summary: 'Get a pet by its id',
     description: 'Returns a pet by its id in database',
-    handler: getPets,
     tags: ['api'],
     validation: {
       pathParameters: {

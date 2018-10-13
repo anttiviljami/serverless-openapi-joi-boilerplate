@@ -6,7 +6,15 @@ export interface PetRow {
   updated_at?: Date;
 }
 
-export async function getPets(): Promise<PetRow> {
+export async function getPet(id: number): Promise<PetRow> {
+  const pets = await knex('pets')
+    .where({ id })
+    .select()
+    .first();
+  return pets;
+}
+
+export async function getAllPets(): Promise<PetRow[]> {
   const pets = await knex('pets')
     .select();
   return pets;
