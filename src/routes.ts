@@ -5,6 +5,10 @@ import { Route } from './util/router';
 
 import { getPets, getPetById } from './handler/pet-handler';
 
+const auth = {
+  'x-api-key': Joi.string().required(),
+};
+
 const routes: Route[] = [
   {
     method: 'GET',
@@ -14,6 +18,9 @@ const routes: Route[] = [
     summary: 'List pets',
     description: 'Returns all pets in database',
     tags: ['api'],
+    validation: {
+      headers: { ...auth },
+    },
   },
   {
     method: 'GET',
@@ -24,6 +31,7 @@ const routes: Route[] = [
     description: 'Returns a pet by its id in database',
     tags: ['api'],
     validation: {
+      headers: { ...auth },
       pathParameters: {
         id: Joi.number()
           .integer()

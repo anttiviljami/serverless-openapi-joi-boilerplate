@@ -25,18 +25,20 @@ functions:
       - http:
           path: swagger.json
           method: get
-          timeout: 30
           cors: true
+          timeout: 30
       - http:
           path: pets
           method: get
-          timeout: 30
+          private: true
           cors: true
+          timeout: 30
       - http:
           path: pets/{id}
           method: get
-          timeout: 30
+          private: true
           cors: true
+          timeout: 30
 
 package:
   exclude:

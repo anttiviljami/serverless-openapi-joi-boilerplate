@@ -2,6 +2,7 @@ import _ from 'lodash';
 import { SchemaLike } from 'joi';
 import joi2json from 'joi-to-json-schema';
 import { Route } from '../util/router';
+import { createLogger } from '../util/logger';
 
 export function getOpenAPISpec(routes: Route[]) {
   const OPENAPI_VERSION = '3.0.0';
@@ -40,6 +41,15 @@ export function getOpenAPISpec(routes: Route[]) {
   };
 }
 
+// convert default
+function nameToRef(name: string, context: string = '') {
+  const nameStandardised = _.chain(name)
+    .camelCase()
+    .upperFirst()
+    .value();
+  return `${context}${nameStandardised}`;
+}
+
 // adds definitions from path validation to schemas array and returns the path definition itself
 function routeToPathDef(route: Route, schemas: any[]) {
   const { path, method, operationId, summary, description, tags, validation } = route;
@@ -57,9 +67,26 @@ function routeToPathDef(route: Route, schemas: any[]) {
   const parameters: any[] = [];
 
   if (validation) {
+    if (validation.headers) {
+      _.mapValues(validation.headers, (joi: SchemaLike, name: string) => {
+        const defaultRef = nameToRef(name, `${operationId}Header`);
+        const ref = createOpenAPIDef(defaultRef, joi, schemas);
+        const required = _.get(joi, '_flags.presence', 'optional') === 'required';
+        parameters.push({
+          name,
+          in: 'header',
+          description: 'Headers',
+          required,
+          schema: {
+            $ref: `#/components/schemas/${ref}`,
+          },
+        });
+      });
+    }
+
     if (validation.pathParameters) {
       _.mapValues(validation.pathParameters, (joi: SchemaLike, name: string) => {
-        const defaultRef = `${operationId}Path${_.upperFirst(name)}`;
+        const defaultRef = nameToRef(name, `${operationId}Path`);
         const ref = createOpenAPIDef(defaultRef, joi, schemas);
         parameters.push({
           name,

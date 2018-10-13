@@ -15,5 +15,5 @@ before_script:
   - npm run migrate
   - npm run seed
 after_success:
-  - npm run deploy:qa
-  - npm run migrate:qa
+  - npm run deploy:dev
+  - npm run migrate:dev

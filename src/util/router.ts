@@ -5,7 +5,7 @@ import { APIGatewayProxyEvent } from 'aws-lambda';
 
 import { getOpenAPISpec } from '../core/openapi-core';
 
-import { createLogger } from './logger';
+import { createLogger } from './/logger';
 const logger = createLogger(__filename);
 
 export interface Route {
@@ -84,13 +84,13 @@ async function handleRoute(event: Partial<APIGatewayProxyEvent>, routes: Route[]
     }, _.isNil);
 
     const validationDefaults = {
-      headers: Joi.object().unknown(),
       queryStringParameters: Joi.object().unknown(),
     };
 
     const validationResult = Joi.validate(input, {
       ...validationDefaults,
       ...validation,
+      headers: Joi.object(headers || {}).unknown(), // headers are always partially defined
     });
 
     // throw a 400 error if there are any validation errors
