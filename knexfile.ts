@@ -8,11 +8,11 @@ const db = {
   seeds: {
     directory: './src/seeds',
   },
-}
+};
 
 module.exports = {
   test: db,
   development: db,
   staging: db,
   production: db,
-}
+};
