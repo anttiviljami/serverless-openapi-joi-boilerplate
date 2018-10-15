@@ -1,12 +1,12 @@
 import _ from 'lodash';
-import Joi from 'joi';
 
 import { Route } from './util/router';
 
 import { getPets, getPetById, createPet, deletePetById } from './handler/pet-handler';
+import validation from './validation';
 
 const auth = {
-  'x-api-key': Joi.string().required().label('ApiKey'),
+  'x-api-key': validation.apiKey.required(),
 };
 
 const routes: Route[] = [
@@ -20,6 +20,10 @@ const routes: Route[] = [
     tags: ['api'],
     validation: {
       headers: { ...auth },
+      queryStringParameters: {
+        limit: validation.limit,
+        offset: validation.offset,
+      },
     },
   },
   {
@@ -33,9 +37,7 @@ const routes: Route[] = [
     validation: {
       headers: { ...auth },
       pathParameters: {
-        id: Joi.number()
-          .integer()
-          .required(),
+        id: validation.petId,
       },
     },
   },
@@ -49,9 +51,7 @@ const routes: Route[] = [
     tags: ['api'],
     validation: {
       headers: { ...auth },
-      payload: Joi.object({
-        name: Joi.string().required(),
-      }),
+      payload: validation.createPetPayload,
     },
   },
   {
@@ -65,9 +65,7 @@ const routes: Route[] = [
     validation: {
       headers: { ...auth },
       pathParameters: {
-        id: Joi.number()
-          .integer()
-          .required(),
+        id: validation.petId,
       },
     },
   },

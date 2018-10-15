@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import Boom from 'boom';
 import { HandlerContext } from '../util/router';
 import { getPet, getAllPets, addPet, deletePet } from '../core/pet-core';
@@ -13,7 +14,9 @@ export async function getPetById(event: HandlerContext) {
 }
 
 export async function getPets(event: HandlerContext) {
-  const pets = await getAllPets();
+  const limit = Number(_.get(event.queryStringParameters, 'limit', '10'));
+  const offset = Number(_.get(event.queryStringParameters, 'offset', '0'));
+  const pets = await getAllPets({ limit, offset });
   return { result: pets };
 }
 

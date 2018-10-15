@@ -52,7 +52,6 @@ function nameToRef(name: string, context: string = '') {
 // adds definitions from path validation to schemas array and returns the path definition itself
 function routeToPathDef(route: Route, schemas: any[]) {
   const { path, method, operationId, summary, description, tags, validation } = route;
-
   const responses = {
     '200': {
       description: 'Success',
@@ -62,21 +61,20 @@ function routeToPathDef(route: Route, schemas: any[]) {
     },
     ...route.responses || {},
   };
-
   let requestBody;
   const parameters: any[] = [];
 
   if (validation) {
     if (validation.headers) {
       _.mapValues(validation.headers, (joi: SchemaLike, name: string) => {
-        const defaultRef = nameToRef(name, `${operationId}Header`);
-        const ref = createOpenAPIDef(defaultRef, joi, schemas);
-        const required = _.get(joi, '_flags.presence', 'optional') === 'required';
+        const ref = createOpenAPIDef(nameToRef(name, `${operationId}Header`), joi, schemas);
+        const joiDescription = _.get(joi, '_description', `Request header: ${name}`);
+        const joiRequired = _.get(joi, '_flags.presence', 'optional') === 'required';
         parameters.push({
           name,
           in: 'header',
-          description: 'Headers',
-          required,
+          description: joiDescription,
+          required: joiRequired,
           schema: {
             $ref: `#/components/schemas/${ref}`,
           },
@@ -86,13 +84,30 @@ function routeToPathDef(route: Route, schemas: any[]) {
 
     if (validation.pathParameters) {
       _.mapValues(validation.pathParameters, (joi: SchemaLike, name: string) => {
-        const defaultRef = nameToRef(name, `${operationId}Path`);
-        const ref = createOpenAPIDef(defaultRef, joi, schemas);
+        const ref = createOpenAPIDef(nameToRef(name, `${operationId}Path`), joi, schemas);
+        const joiDescription = _.get(joi, '_description', `Path parameter: ${name}`);
         parameters.push({
           name,
           in: 'path',
-          description: 'Path parameters',
+          description: joiDescription,
           required: true, // path params are always required
+          schema: {
+            $ref: `#/components/schemas/${ref}`,
+          },
+        });
+      });
+    }
+
+    if (validation.queryStringParameters) {
+      _.mapValues(validation.queryStringParameters, (joi: SchemaLike, name: string) => {
+        const ref = createOpenAPIDef(nameToRef(name, `${operationId}Query`), joi, schemas);
+        const joiDescription = _.get(joi, '_description', `Query parameter: ${name}`);
+        const joiRequired = _.get(joi, '_flags.presence', 'optional') === 'required';
+        parameters.push({
+          name,
+          in: 'query',
+          description: joiDescription,
+          required: joiRequired,
           schema: {
             $ref: `#/components/schemas/${ref}`,
           },
@@ -102,10 +117,10 @@ function routeToPathDef(route: Route, schemas: any[]) {
 
     if (validation.payload) {
       const joi = validation.payload;
-      const name = `${nameToRef(operationId)}Payload`;
-      const ref = createOpenAPIDef(name, joi, schemas);
+      const ref = createOpenAPIDef(`${nameToRef(operationId)}Payload`, joi, schemas);
+      const joiDescription = _.get(joi, '_description', `Request payload: ${operationId}`);
       requestBody = {
-        description: `${operationId} payload`,
+        description: joiDescription,
         content: {
           'application/json': {
             schema: {

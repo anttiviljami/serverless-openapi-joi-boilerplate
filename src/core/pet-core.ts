@@ -12,6 +12,11 @@ export interface PetPayload {
   name: string;
 }
 
+export interface ListOpts {
+  limit?: number;
+  offset?: number;
+}
+
 export async function getPet(id: number): Promise<PetRow> {
   const pets = await knex('pets')
     .where({ id })
@@ -20,8 +25,11 @@ export async function getPet(id: number): Promise<PetRow> {
   return pets;
 }
 
-export async function getAllPets(): Promise<PetRow[]> {
+export async function getAllPets(opts: ListOpts): Promise<PetRow[]> {
+  const { limit, offset } = opts;
   const pets = await knex('pets')
+    .limit(limit || 10)
+    .offset(offset || 0)
     .select();
   return pets;
 }
