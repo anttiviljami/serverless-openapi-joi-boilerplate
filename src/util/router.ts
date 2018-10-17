@@ -15,7 +15,7 @@ export interface HandlerContext extends APIGatewayProxyEvent {
 export interface Route {
   method: string;
   path: string;
-  operationId: string;
+  operationId?: string;
   summary?: string;
   description?: string;
   tags?: string[];

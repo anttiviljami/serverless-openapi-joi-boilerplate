@@ -51,7 +51,8 @@ function nameToRef(name: string, context: string = '') {
 
 // adds definitions from path validation to schemas array and returns the path definition itself
 function routeToPathDef(route: Route, schemas: any[]) {
-  const { path, method, operationId, summary, description, tags, validation } = route;
+  const { path, method, summary, description, tags, validation } = route;
+  const operationId = route.operationId ? route.operationId : route.handler.name;
   const responses = {
     '200': {
       description: 'Success',

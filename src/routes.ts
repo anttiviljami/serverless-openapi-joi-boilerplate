@@ -13,7 +13,6 @@ const routes: Route[] = [
   {
     method: 'GET',
     path: '/pets',
-    operationId: 'getPets',
     handler: getPets,
     summary: 'List pets',
     description: 'Returns all pets in database',
@@ -29,7 +28,6 @@ const routes: Route[] = [
   {
     method: 'GET',
     path: '/pets/{id}',
-    operationId: 'getPetById',
     handler: getPetById,
     summary: 'Get a pet by its id',
     description: 'Returns a pet by its id in database',
@@ -44,7 +42,6 @@ const routes: Route[] = [
   {
     method: 'POST',
     path: '/pets',
-    operationId: 'createPet',
     handler: createPet,
     summary: 'Create pet',
     description: 'Crete a new pet into the database',
@@ -57,7 +54,6 @@ const routes: Route[] = [
   {
     method: 'DELETE',
     path: '/pets/{id}',
-    operationId: 'deletePetById',
     handler: deletePetById,
     summary: 'Delete a pet by its id',
     description: 'Deletes a pet by its id in database',
