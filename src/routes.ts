@@ -16,7 +16,7 @@ const routes: Route[] = [
     handler: getPets,
     summary: 'List pets',
     description: 'Returns all pets in database',
-    tags: ['api'],
+    tags: ['pets'],
     validation: {
       headers: { ...auth },
       queryStringParameters: {
@@ -31,7 +31,7 @@ const routes: Route[] = [
     handler: getPetById,
     summary: 'Get a pet by its id',
     description: 'Returns a pet by its id in database',
-    tags: ['api'],
+    tags: ['pets'],
     validation: {
       headers: { ...auth },
       pathParameters: {
@@ -45,7 +45,7 @@ const routes: Route[] = [
     handler: createPet,
     summary: 'Create pet',
     description: 'Crete a new pet into the database',
-    tags: ['api'],
+    tags: ['pets'],
     validation: {
       headers: { ...auth },
       payload: validation.createPetPayload,
@@ -57,7 +57,7 @@ const routes: Route[] = [
     handler: deletePetById,
     summary: 'Delete a pet by its id',
     description: 'Deletes a pet by its id in database',
-    tags: ['api'],
+    tags: ['pets'],
     validation: {
       headers: { ...auth },
       pathParameters: {
