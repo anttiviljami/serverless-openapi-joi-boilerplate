@@ -12,6 +12,7 @@ provider:
     DB_PASS: ${self:custom.env.${self:provider.stage}.DB_PASS}
     DATABASE_URL: ${self:custom.env.${self:provider.stage}.DATABASE_URL}
     BASEURL: ${self:custom.env.${self:provider.stage}.BASEURL}
+    BUCKET_NAME: ${self:service}-${self:provider.stage}-swaggerui
   apiKeys:
     - ${self:service}-${self:provider.stage}-key
 
@@ -60,6 +61,7 @@ package:
 
 plugins:
   - serverless-offline
+  - serverless-stack-output
 
 resources:
   Resources:
@@ -89,9 +91,55 @@ resources:
           - Fn::GetAtt:
             - ServerlessRDSSecurityGroup
             - GroupId
+    SwaggerUIBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        AccessControl: PublicRead
+        BucketName: ${self:provider.environment.BUCKET_NAME}
+        WebsiteConfiguration:
+          IndexDocument: index.html
+        CorsConfiguration:
+          CorsRules:
+            - AllowedOrigins:
+                - '*'
+              AllowedHeaders:
+                - '*'
+              AllowedMethods:
+                - GET
+                - HEAD
+              MaxAge: 3000
+    SwaggerUIBucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket:
+          Ref: SwaggerUIBucket
+        PolicyDocument:
+          Statement:
+            - Sid: PublicReadGetObject
+              Effect: Allow
+              Principal: "*"
+              Action:
+              - s3:GetObject
+              Resource:
+                Fn::Join: [
+                  "", [
+                    "arn:aws:s3:::",
+                    {
+                      "Ref": "SwaggerUIBucket"
+                    },
+                    "/*"
+                  ]
+                ]
 
+  Outputs:
+    SwaggerUIBucketName:
+      Value:
+        Ref: SwaggerUIBucket
 
 custom:
+  output:
+    handler: scripts/build-swaggerui.handler
+
   serverless-offline:
     port: ${env:PORT}
     apiKey: ${env:API_KEY}

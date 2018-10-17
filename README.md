@@ -5,13 +5,13 @@ Boilerplate serverless API project with generated OpenAPI docs (formerly known a
 
 Inspired by Hapi and [hapi-swagger](https://github.com/glennjones/hapi-swagger)
 
-- [x] **Auto-generated OpenAPI docs from code** at endpoint `/swagger.json` (configurable)
-- [x] **Joi validated requests**
-- [x] Local development with serverless-offline + Docker
+- [x] **Auto-generated OpenAPI v3 docs from code**
+- [x] **Joi validated requests with nice errors**
+- [x] **Swagger UI to view OpenAPI docs**, hosted on S3 as a static site ([example](http://openapi-joi-example-dev-swaggerui.s3-website-eu-west-1.amazonaws.com/))
+- [x] Local development powered by serverless-offline
 - [x] Knex migrations & query builder on PostgreSQL
 - [x] Example CRUD API
 - [x] Tests with jest
-- [x] Local Swagger UI to view OpenAPI docs
 - [x] Travis CI configuration for serverless deployment
 - [x] Typescript configuration with sensible defaults
 - [x] Prettier + Tslint
@@ -20,15 +20,15 @@ Inspired by Hapi and [hapi-swagger](https://github.com/glennjones/hapi-swagger)
 
 Requirements:
 - Node.js v8+
-- Docker
+- Local PostgreSQL (docker-compose file included)
 
 ```
 cp .env.sample .env # Set up environment variables
 source .env
 npm install
-docker-compose up --detach # PostgreSQL running, Swagger UI listening at http://localhost:9001
+docker-compose up --detach # PostgreSQL running
 npm run migrate # Set up database schema with knex migrations
-npm run dev # Serverless offline listening at http://localhost:9000
+npm run dev # Serverless offline: http://localhost:9000, Swagger UI: http://localhost:9001
 ```
 
 ## Codebase
@@ -40,11 +40,12 @@ npm run dev # Serverless offline listening at http://localhost:9000
   - `src/routes.ts` where api routes are defined
   - `src/validation/**` joi validation definitions for api routes
   - `src/handler/**` handlers for when routing is finished, this is where control logic happens
-  - `src/core/**` core business logic + reading & writing to database) happens here
+  - `src/core/**` core business logic + reading & writing to database happens here
   - `src/util/**` boring utilities like router logic and helpers are stored here
   - `src/types/**` type definitions (.d.ts files)
   - `src/migrations/**` knex database migration files (use `knex migrate:make` to create these)
   - `src/seeds/**` knex database seed files (use `knex seeds:make` to create these)
+- `scripts/**` scripts or other useful tools like for building static Swagger UI docs for S3
 - `__tests__/**` jest tests
 - `docker-compose.yml` docker compose file, defines Swagger UI and PostgreSQL containers for development
 
@@ -59,7 +60,7 @@ export AWS_SECRET_ACCESS_KEY=
 Full deploy with Serverless. (This will take some time on the first time)
 ```
 npm run build # build project
-serverless deploy --stage dev # deploy stage
+serverless deploy --stage dev
 ```
 
 In order to save time, you can also just deploy a single function and skip Cloudformation after first deploy is finished

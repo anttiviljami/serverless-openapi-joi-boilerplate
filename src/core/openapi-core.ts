@@ -3,13 +3,13 @@ import { SchemaLike } from 'joi';
 import joi2json from 'joi-to-json-schema';
 import { Route } from '../util/router';
 
-export function getOpenAPISpec(routes: Route[]) {
+export function getOpenAPISpec(routes: Route[], baseurl?: string) {
   const OPENAPI_VERSION = '3.0.0';
-  const title = 'Example pet API';
+  const title = 'Example Serverless Pet API';
   const description = 'Example CRUD API to demonstrate auto-generated openapi docs with Joi';
-  const version = '1.0.0';
+  const version = '0.1.0';
   const server = {
-    url: process.env.BASEURL,
+    url: baseurl || process.env.BASEURL,
   };
   const schemas: any[] = [];
 

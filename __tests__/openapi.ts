@@ -8,7 +8,7 @@ interface ExtendedMatchers extends jest.Matchers<any> {
 
 expect.extend({
   toBeValidOpenAPI(received: any, version: number = 3) {
-    const { valid, errors } = validate(received, 3);
+    const { valid, errors } = validate(received, version);
     return valid ? {
       pass: true,
       message: () => `Document is valid openapi v${version}`,

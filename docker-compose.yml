@@ -10,11 +10,5 @@ services:
       - '${DB_PORT:-5432}:5432'
     volumes:
       - pgdata:/var/lib/postgresql/data
-  swaggerui:
-    image: swaggerapi/swagger-ui
-    environment:
-      - 'API_URL=http://localhost:${PORT:-9000}/swagger.json'
-    ports:
-      - '${SWAGGERUI_PORT:-9001}:8080'
 volumes:
   pgdata: {}
