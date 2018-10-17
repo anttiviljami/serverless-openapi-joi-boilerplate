@@ -35,7 +35,6 @@ npm run dev # Serverless offline listening at http://localhost:9000
 
 - `.env` shell environment file for development, use `.env.sample` to create your own
 - `serverless.yml` serverless config file, defines functions, endpoints and cloudformation resources
-- `docker-compose.yml` docker compose file, defines swagger ui and postgresql containers for development
 - `src/**` typescript source code
   - `src/handler.ts` serverless main entrypoint, this is where all http requests and function invocations start from
   - `src/routes.ts` where api routes are defined
@@ -44,9 +43,10 @@ npm run dev # Serverless offline listening at http://localhost:9000
   - `src/core/**` core business logic + reading & writing to database) happens here
   - `src/util/**` boring utilities like router logic and helpers are stored here
   - `src/types/**` type definitions (.d.ts files)
-  - `src/migrations` knex database migration files (use `knex migrate:make` to create these)
-  - `src/seeds` knex database seed files (use `knex seeds:make` to create these)
+  - `src/migrations/**` knex database migration files (use `knex migrate:make` to create these)
+  - `src/seeds/**` knex database seed files (use `knex seeds:make` to create these)
 - `__tests__/**` jest tests
+- `docker-compose.yml` docker compose file, defines Swagger UI and PostgreSQL containers for development
 
 ## Deploy
 

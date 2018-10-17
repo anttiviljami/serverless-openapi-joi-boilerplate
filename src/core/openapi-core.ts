@@ -68,7 +68,7 @@ function routeToPathDef(route: Route, schemas: any[]) {
     if (validation.headers) {
       _.mapValues(validation.headers, (joi: SchemaLike, name: string) => {
         const ref = createOpenAPIDef(nameToRef(name, `${operationId}Header`), joi, schemas);
-        const joiDescription = _.get(joi, '_description', `Request header: ${name}`);
+        const joiDescription = _.get(joi, '_description') || `Request header: ${name}`;
         const joiRequired = _.get(joi, '_flags.presence', 'optional') === 'required';
         parameters.push({
           name,
@@ -85,7 +85,7 @@ function routeToPathDef(route: Route, schemas: any[]) {
     if (validation.pathParameters) {
       _.mapValues(validation.pathParameters, (joi: SchemaLike, name: string) => {
         const ref = createOpenAPIDef(nameToRef(name, `${operationId}Path`), joi, schemas);
-        const joiDescription = _.get(joi, '_description', `Path parameter: ${name}`);
+        const joiDescription = _.get(joi, '_description') || `Path parameter: ${name}`;
         parameters.push({
           name,
           in: 'path',
@@ -101,7 +101,7 @@ function routeToPathDef(route: Route, schemas: any[]) {
     if (validation.queryStringParameters) {
       _.mapValues(validation.queryStringParameters, (joi: SchemaLike, name: string) => {
         const ref = createOpenAPIDef(nameToRef(name, `${operationId}Query`), joi, schemas);
-        const joiDescription = _.get(joi, '_description', `Query parameter: ${name}`);
+        const joiDescription = _.get(joi, '_description') || `Query parameter: ${name}`;
         const joiRequired = _.get(joi, '_flags.presence', 'optional') === 'required';
         parameters.push({
           name,
@@ -118,7 +118,7 @@ function routeToPathDef(route: Route, schemas: any[]) {
     if (validation.payload) {
       const joi = validation.payload;
       const ref = createOpenAPIDef(`${nameToRef(operationId)}Payload`, joi, schemas);
-      const joiDescription = _.get(joi, '_description', `Request payload: ${operationId}`);
+      const joiDescription = _.get(joi, '_description') || `Request payload: ${operationId}`;
       requestBody = {
         description: joiDescription,
         content: {
@@ -148,8 +148,8 @@ function routeToPathDef(route: Route, schemas: any[]) {
 
 // adds the definition to the definitons array, returns the reference
 function createOpenAPIDef(name: string, joi: SchemaLike, schemas: any[]) {
-  const def = joi2json(joi);
+  const def = joi2json(joi, (schema) => _.omit(schema, ['patterns', 'examples']));
   const ref = def.title || name;
-  schemas.push({ ref, ..._.omit(def, ['title', 'patterns']) });
+  schemas.push({ ref, ...def });
   return ref;
 }
