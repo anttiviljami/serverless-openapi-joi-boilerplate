@@ -11,7 +11,17 @@ export function getOpenAPISpec(routes: Route[], baseurl?: string) {
   const server = {
     url: baseurl || process.env.BASEURL,
   };
-  const security = [{ 'ApiKey': [] as string[] }];
+  const securitySchemes = {
+    'ApiKey': {
+      type: 'apiKey',
+      name: 'x-api-key',
+      in: 'header',
+    },
+  };
+  const security = _.chain(securitySchemes)
+    .keys()
+    .map((scheme: string) => ({ [scheme]: [] }))
+    .value();
 
   const schemas: any[] = [];
   const requestBodies: any[] = [];
@@ -42,21 +52,15 @@ export function getOpenAPISpec(routes: Route[], baseurl?: string) {
     tags,
     paths,
     components: {
-      schemas: _.chain(schemas)
-        .keyBy('ref')
-        .mapValues((def) => _.omit(def, 'ref')) // omit ref property
-        .value(),
+      securitySchemes,
       requestBodies: _.chain(requestBodies)
         .keyBy('ref')
         .mapValues((def) => _.omit(def, 'ref')) // omit ref property
         .value(),
-      securitySchemes: {
-        'ApiKey': {
-          type: 'apiKey',
-          name: 'x-api-key',
-          in: 'header',
-        },
-      },
+      schemas: _.chain(schemas)
+        .keyBy('ref')
+        .mapValues((def) => _.omit(def, 'ref')) // omit ref property
+        .value(),
     },
   };
 }

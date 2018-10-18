@@ -37,8 +37,7 @@ npm run dev # Serverless offline: http://localhost:9000, Swagger UI: http://loca
 - `serverless.yml` serverless config file, defines functions, endpoints and cloudformation resources
 - `src/**` typescript source code
   - `src/handler.ts` serverless main entrypoint, this is where all http requests and function invocations start from
-  - `src/routes.ts` where api routes are defined
-  - `src/validation/**` joi validation definitions for api routes
+  - `src/routes.ts` where api routes and validations are defined
   - `src/handler/**` handlers for when routing is finished, this is where control logic happens
   - `src/core/**` core business logic + reading & writing to database happens here
   - `src/util/**` boring utilities like router logic and helpers are stored here

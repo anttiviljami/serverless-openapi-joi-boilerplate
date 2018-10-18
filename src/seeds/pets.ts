@@ -11,4 +11,6 @@ exports.seed = async (knex: Knex) => {
     },
   ];
   await BPromise.mapSeries(rows, (row) => upsert(knex, 'pets', row));
+  // reset sequence after upsert
+  await knex.schema.raw(`select setval('pets_id_seq', (select max(id) from pets))`);
 };

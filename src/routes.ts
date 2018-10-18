@@ -1,12 +1,31 @@
 import _ from 'lodash';
-
+import Joi from 'joi';
 import { Route } from './util/router';
-
 import { getPets, getPetById, createPet, updatePetById, deletePetById } from './handler/pet-handler';
-import validation from './validation';
 
-const auth = {
-  'x-api-key': validation.apiKey.required(),
+// validations
+const validation = {
+  petId: Joi.number().integer()
+    .description('Unique identifier for pet in database')
+    .example(1)
+    .label('PetId'),
+
+  petPayload: Joi.object({
+    name: Joi.string()
+      .description('Name of the pet')
+      .example('Garfield')
+      .label('PetName'),
+  }).label('PetPayload'),
+
+  limit: Joi.number().integer().positive()
+    .description('Number of items to return')
+    .example(25)
+    .label('QueryLimit'),
+
+  offset: Joi.number().integer().min(0)
+    .description('Starting offset for returning items')
+    .example(0)
+    .label('QueryOffset'),
 };
 
 // tags can be either a simple string or a tag object
@@ -17,6 +36,7 @@ const tag = {
   },
 };
 
+// api routes
 const routes: Route[] = [
   {
     method: 'GET',
@@ -26,7 +46,6 @@ const routes: Route[] = [
     description: 'Returns all pets in database',
     tags: [tag.pets],
     validation: {
-      headers: { ...auth },
       queryStringParameters: {
         limit: validation.limit,
         offset: validation.offset,
@@ -44,7 +63,6 @@ const routes: Route[] = [
     description: 'Returns a pet by its id in database',
     tags: ['pets'],
     validation: {
-      headers: { ...auth },
       pathParameters: {
         id: validation.petId,
       },
@@ -62,7 +80,6 @@ const routes: Route[] = [
     description: 'Crete a new pet into the database',
     tags: ['pets'],
     validation: {
-      headers: { ...auth },
       payload: validation.petPayload,
     },
     responses: {
@@ -77,7 +94,6 @@ const routes: Route[] = [
     description: 'Update an existing pet in the database',
     tags: ['pets'],
     validation: {
-      headers: { ...auth },
       pathParameters: {
         id: validation.petId,
       },
@@ -96,7 +112,6 @@ const routes: Route[] = [
     description: 'Deletes a pet by its id in database',
     tags: ['pets'],
     validation: {
-      headers: { ...auth },
       pathParameters: {
         id: validation.petId,
       },
