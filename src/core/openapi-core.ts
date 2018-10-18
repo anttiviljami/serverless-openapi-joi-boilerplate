@@ -53,11 +53,8 @@ function nameToRef(name: string, context: string = '') {
 function routeToPathDef(route: Route, schemas: any[]) {
   const { path, method, summary, description, tags, validation } = route;
   const operationId = route.operationId ? route.operationId : route.handler.name;
-  const responses = {
-    200: {
-      description: 'Success', // default
-    },
-    ...route.responses || {},
+  const responses = route.responses ? route.responses : {
+    200: { description: 'Success' }, // default
   };
   let requestBody;
   const parameters: any[] = [];
