@@ -23,30 +23,156 @@ Requirements:
 - Local PostgreSQL (docker-compose file included)
 
 ```
-cp .env.sample .env # Set up environment variables
-source .env
+source .env.sample# Set up environment variables
 npm install
-docker-compose up --detach # PostgreSQL running
+docker-compose up --detach # PostgreSQL listening at port 5432
 npm run migrate # Set up database schema with knex migrations
 npm run dev # Serverless offline: http://localhost:9000, Swagger UI: http://localhost:9001
 ```
 
+## Example
+
+Validation models are defined using Joi
+
+```typescript
+import Joi from 'joi';
+
+const validation = {
+  petId: Joi.number().integer()
+    .description('Unique identifier for pet in database')
+    .example(1)
+    .label('PetId'),
+
+  petPayload: Joi.object({
+    name: Joi.string()
+      .description('Name of the pet')
+      .example('Garfield')
+      .label('PetName'),
+  }).label('PetPayload'),
+
+  limit: Joi.number().integer().positive()
+    .description('Number of items to return')
+    .example(25)
+    .label('QueryLimit'),
+
+  offset: Joi.number().integer().min(0)
+    .description('Starting offset for returning items')
+    .example(0)
+    .label('QueryOffset'),
+};
+```
+
+Routes define API operations using validation rules for request body, path parameters, query parameters and headers.
+
+```typescript
+const routes = [
+  {
+    method: 'GET',
+    path: '/pets',
+    handler: getPets,
+    summary: 'List pets',
+    description: 'Returns all pets in database',
+    tags: ['pets'],
+    validation: {
+      queryStringParameters: {
+        limit: validation.limit,
+        offset: validation.offset,
+      },
+    },
+    responses: {
+      200: { description: 'List of pets in database' },
+    },
+  },
+  {
+    method: 'GET',
+    path: '/pets/{id}',
+    handler: getPetById,
+    summary: 'Get a pet by its id',
+    description: 'Returns a pet by its id in database',
+    tags: ['pets'],
+    validation: {
+      pathParameters: {
+        id: validation.petId,
+      },
+    },
+    responses: {
+      200: { description: 'Pet object corresponding to id' },
+      404: { description: 'Pet not found' },
+    },
+  },
+  {
+    method: 'POST',
+    path: '/pets',
+    handler: createPet,
+    summary: 'Create pet',
+    description: 'Crete a new pet into the database',
+    tags: ['pets'],
+    validation: {
+      payload: validation.petPayload,
+    },
+    responses: {
+      201: { description: 'Pet created succesfully' },
+    },
+  },
+  {
+    method: 'PATCH',
+    path: '/pets/{id}',
+    handler: updatePetById,
+    summary: 'Update pet',
+    description: 'Update an existing pet in the database',
+    tags: ['pets'],
+    validation: {
+      pathParameters: {
+        id: validation.petId,
+      },
+      payload: validation.petPayload,
+    },
+    responses: {
+      200: { description: 'Pet updated succesfully' },
+      404: { description: 'Pet not found' },
+    },
+  },
+  {
+    method: 'DELETE',
+    path: '/pets/{id}',
+    handler: deletePetById,
+    summary: 'Delete a pet by its id',
+    description: 'Deletes a pet by its id in database',
+    tags: ['pets'],
+    validation: {
+      pathParameters: {
+        id: validation.petId,
+      },
+    },
+    responses: {
+      200: { description: 'Pet deleted succesfully' },
+      404: { description: 'Pet not found' },
+    },
+  },
+];
+```
+
+OpenAPI v3 docs including JSON schema models are automatically generated for API, which can be viewed with tools like
+Swagger UI. You can use either the generated static Swagger UI documentation page, or the `/swagger.json` endpoint.
+
+![Swagger UI docs](swaggerui.png)
+
 ## Codebase
 
-- `.env` shell environment file for development, use `.env.sample` to create your own
-- `serverless.yml` serverless config file, defines functions, endpoints and cloudformation resources
-- `src/**` typescript source code
-  - `src/handler.ts` serverless main entrypoint, this is where all http requests and function invocations start from
-  - `src/routes.ts` where api routes and validations are defined
-  - `src/handler/**` handlers for when routing is finished, this is where control logic happens
-  - `src/core/**` core business logic + reading & writing to database happens here
-  - `src/util/**` boring utilities like router logic and helpers are stored here
-  - `src/types/**` type definitions (.d.ts files)
-  - `src/migrations/**` knex database migration files (use `knex migrate:make` to create these)
-  - `src/seeds/**` knex database seed files (use `knex seeds:make` to create these)
-- `scripts/**` scripts or other useful tools like for building static Swagger UI docs for S3
-- `__tests__/**` jest tests
-- `docker-compose.yml` docker compose file, defines Swagger UI and PostgreSQL containers for development
+- `serverless.yml` – serverless config file, defines functions, endpoints and cloudformation resources
+- `src/**` – typescript source files
+  - `src/handler.ts` – serverless main entrypoint, this is where all http requests and function invocations start from
+  - `src/routes.ts` – where api routes and validations are defined
+  - `src/handler/**` – handlers for when routing is finished, this is where control logic happens
+  - `src/core/**` – core business logic + reading & writing to database happens here
+  - `src/util/**` – boring utilities like router logic and helpers are stored here
+  - `src/types/**` – type definitions (.d.ts files)
+  - `src/migrations/**` – knex database migration files (use `knex migrate:make` to create these)
+  - `src/seeds/**` – knex database seed files (use `knex seeds:make` to create these)
+- `dist/**` – transpiled javascript from source files
+- `static/**` – generated static Swagger UI docs
+- `scripts/**` – reusable scripts like for building static Swagger UI docs
+- `__tests__/**` – jest tests
 
 ## Deploy
 
@@ -64,6 +190,5 @@ serverless deploy --stage dev
 
 In order to save time, you can also just deploy a single function and skip Cloudformation after first deploy is finished
 ```
-npm run pre-deploy
 serverless deploy function -f <function name> --stage dev
 ```
