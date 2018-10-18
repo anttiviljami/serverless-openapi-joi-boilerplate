@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import Boom from 'boom';
-import { HandlerEvent, HandlerContext } from '../util/router';
+import { HandlerEvent, HandlerContext } from 'serverless-openapi-joi/handler';
 import { getPet, getAllPets, insertPet, updatePet, deletePet } from '../core/pet-core';
 
 export async function getPetById(event: HandlerEvent) {

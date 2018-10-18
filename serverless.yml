@@ -68,6 +68,7 @@ package:
 plugins:
   - serverless-offline
   - serverless-stack-output
+  - serverless-openapi-joi
 
 resources:
   Resources:
