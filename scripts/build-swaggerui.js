@@ -12,8 +12,15 @@ const mime = require('mime');
 const { S3 } = require('aws-sdk');
 const { getAbsoluteFSPath } = require('swagger-ui-dist');
 const { validate } = require('openapi-schema-validation');
-const { getOpenAPISpec } = require('../dist/core/openapi-core');
+const OpenAPIHandler = require('serverless-openapi-joi/handler').default;
 const routes = require('../dist/routes').default;
+const openapi = new OpenAPIHandler({
+  routes,
+  title: 'Example CRUD Pet API',
+  description: 'Example CRUD API to demonstrate auto-generated openapi docs with Joi',
+  version: '0.1.0',
+  baseurl: process.env.BASEURL,
+});
 
 async function handler(data) {
   const { ServiceEndpoint, SwaggerUIBucketName } = data;
@@ -24,7 +31,7 @@ async function handler(data) {
   fs.existsSync(outputPath) || fs.mkdirSync(outputPath);
 
   // generate swagger.json
-  const apispec = getOpenAPISpec(routes, ServiceEndpoint);
+  const apispec = openapi.getOpenAPISpec(routes, ServiceEndpoint);
 
   // validate openapi and warn in case there are issues
   const { valid, errors } = validate(apispec, 3);

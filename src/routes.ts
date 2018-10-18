@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import Joi from 'joi';
-import { Route } from './util/router';
+import { Route } from 'serverless-openapi-joi/handler';
 import { getPets, getPetById, createPet, updatePetById, deletePetById } from './handler/pet-handler';
 
 // validations
