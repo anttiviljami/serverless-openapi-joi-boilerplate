@@ -11,7 +11,7 @@ export function getOpenAPISpec(routes: Route[], baseurl?: string) {
   const server = {
     url: baseurl || process.env.BASEURL,
   };
-  const security = [{ 'x-api-key': [] as string[] }];
+  const security = [{ 'ApiKey': [] as string[] }];
 
   const schemas: any[] = [];
   const requestBodies: any[] = [];
@@ -51,7 +51,7 @@ export function getOpenAPISpec(routes: Route[], baseurl?: string) {
         .mapValues((def) => _.omit(def, 'ref')) // omit ref property
         .value(),
       securitySchemes: {
-        'x-api-key': {
+        'ApiKey': {
           type: 'apiKey',
           name: 'x-api-key',
           in: 'header',
@@ -133,20 +133,21 @@ function routeToPathDef(route: Route, schemas: any[], requestBodies: any[]) {
 
     if (validation.payload) {
       const joi = validation.payload;
-      const ref = createOpenAPIDef(`${nameToRef(operationId)}Payload`, joi, schemas);
+      const payloadRef = `${nameToRef(operationId)}Payload`;
+      const schemaRef = createOpenAPIDef(payloadRef, joi, schemas);
       const joiDescription = _.get(joi, '_description') || `Request payload: ${operationId}`;
       requestBodies.push({
-        ref,
+        ref: payloadRef,
         description: joiDescription,
         content: {
           'application/json': {
             schema: {
-              $ref: `#/components/schemas/${ref}`,
+              $ref: `#/components/schemas/${schemaRef}`,
             },
           },
         },
       });
-      requestBody = { $ref: `#/components/requestBodies/${ref}` };
+      requestBody = { $ref: `#/components/requestBodies/${payloadRef}` };
     }
   }
 

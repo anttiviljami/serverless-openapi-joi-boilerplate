@@ -10,11 +10,11 @@ const petName = Joi.string()
   .example('Garfield')
   .label('PetName');
 
-const createPetPayload = Joi.object({
+const petPayload = Joi.object({
   name: petName.required(),
-}).label('CreatePetPayload');
+}).label('PetPayload');
 
 export {
   petId,
-  createPetPayload,
+  petPayload,
 };

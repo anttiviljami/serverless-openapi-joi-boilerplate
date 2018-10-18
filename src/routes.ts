@@ -63,7 +63,7 @@ const routes: Route[] = [
     tags: ['pets'],
     validation: {
       headers: { ...auth },
-      payload: validation.createPetPayload,
+      payload: validation.petPayload,
     },
     responses: {
       201: { description: 'Pet created succesfully' },
@@ -81,7 +81,7 @@ const routes: Route[] = [
       pathParameters: {
         id: validation.petId,
       },
-      payload: validation.createPetPayload,
+      payload: validation.petPayload,
     },
     responses: {
       200: { description: 'Pet updated succesfully' },
