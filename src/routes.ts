@@ -2,7 +2,7 @@ import _ from 'lodash';
 
 import { Route } from './util/router';
 
-import { getPets, getPetById, createPet, deletePetById } from './handler/pet-handler';
+import { getPets, getPetById, createPet, updatePetById, deletePetById } from './handler/pet-handler';
 import validation from './validation';
 
 const auth = {
@@ -24,6 +24,9 @@ const routes: Route[] = [
         offset: validation.offset,
       },
     },
+    responses: {
+      200: { description: 'List of pets in database' },
+    },
   },
   {
     method: 'GET',
@@ -38,6 +41,10 @@ const routes: Route[] = [
         id: validation.petId,
       },
     },
+    responses: {
+      200: { description: 'Pet object corresponding to id' },
+      404: { description: 'Pet not found' },
+    },
   },
   {
     method: 'POST',
@@ -49,6 +56,28 @@ const routes: Route[] = [
     validation: {
       headers: { ...auth },
       payload: validation.createPetPayload,
+    },
+    responses: {
+      201: { description: 'Pet created succesfully' },
+    },
+  },
+  {
+    method: 'PATCH',
+    path: '/pets/{id}',
+    handler: updatePetById,
+    summary: 'Update pet',
+    description: 'Update an existing pet in the database',
+    tags: ['pets'],
+    validation: {
+      headers: { ...auth },
+      pathParameters: {
+        id: validation.petId,
+      },
+      payload: validation.createPetPayload,
+    },
+    responses: {
+      200: { description: 'Pet updated succesfully' },
+      404: { description: 'Pet not found' },
     },
   },
   {
@@ -63,6 +92,10 @@ const routes: Route[] = [
       pathParameters: {
         id: validation.petId,
       },
+    },
+    responses: {
+      200: { description: 'Pet deleted succesfully' },
+      404: { description: 'Pet not found' },
     },
   },
 ];

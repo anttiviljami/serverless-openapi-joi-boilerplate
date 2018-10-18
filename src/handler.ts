@@ -26,12 +26,13 @@ export async function migrate() {
 
 export async function api(event: Partial<APIGatewayProxyEvent>): Promise<any> {
   try {
-    const res = await routeEvent(event, routes);
+    const { statusCode, body, headers } = await routeEvent(event, routes);
     return {
-      statusCode: 200,
-      body: JSON.stringify(res),
+      statusCode,
+      body,
       headers: {
         ...cors,
+        ...headers,
       },
     };
   } catch (err) {

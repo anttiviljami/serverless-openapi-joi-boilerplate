@@ -48,6 +48,12 @@ functions:
           timeout: 30
       - http:
           path: pets/{id}
+          method: patch
+          private: true
+          cors: true
+          timeout: 30
+      - http:
+          path: pets/{id}
           method: delete
           private: true
           cors: true

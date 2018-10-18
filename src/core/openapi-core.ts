@@ -54,11 +54,8 @@ function routeToPathDef(route: Route, schemas: any[]) {
   const { path, method, summary, description, tags, validation } = route;
   const operationId = route.operationId ? route.operationId : route.handler.name;
   const responses = {
-    '200': {
-      description: 'Success',
-    },
-    default: {
-      description: 'Unexpected error',
+    200: {
+      description: 'Success', // default
     },
     ...route.responses || {},
   };

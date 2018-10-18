@@ -9,6 +9,7 @@ export interface PetRow {
 }
 
 export interface PetPayload {
+  id?: number;
   name: string;
 }
 
@@ -34,9 +35,17 @@ export async function getAllPets(opts: ListOpts): Promise<PetRow[]> {
   return pets;
 }
 
-export async function addPet(pet: PetPayload): Promise<PetRow> {
+export async function insertPet(pet: PetPayload): Promise<PetRow> {
   const res = await knex('pets')
     .insert(pet)
+    .returning('*');
+  return _.first(res);
+}
+
+export async function updatePet(pet: PetPayload): Promise<PetRow> {
+  const res = await knex('pets')
+    .update(pet)
+    .where({ id: pet.id })
     .returning('*');
   return _.first(res);
 }
