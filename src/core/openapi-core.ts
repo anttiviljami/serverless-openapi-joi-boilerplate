@@ -11,15 +11,23 @@ export function getOpenAPISpec(routes: Route[], baseurl?: string) {
   const server = {
     url: baseurl || process.env.BASEURL,
   };
-  const schemas: any[] = [];
+  const security = [{ 'x-api-key': [] as string[] }];
 
+  const schemas: any[] = [];
+  const requestBodies: any[] = [];
   const paths = _.chain(routes)
-    .map((path) => routeToPathDef(path, schemas))
+    .map((path) => routeToPathDef(path, schemas, requestBodies))
     .groupBy('path') // group by paths
     .mapValues((methods) => _.chain(methods)
       .keyBy('method') // group by methods
       .mapValues((method) => _.omit(method, ['method', 'path'])) // omit strip method property
       .value())
+    .value();
+  const tags = _.chain(routes)
+    .flatMap('tags')
+    .map((tag) => typeof tag === 'string' ? { name: tag } : tag)
+    .sortBy('description')
+    .uniqBy('name')
     .value();
 
   return {
@@ -30,12 +38,25 @@ export function getOpenAPISpec(routes: Route[], baseurl?: string) {
       version,
     },
     servers: [server],
+    security,
+    tags,
     paths,
     components: {
       schemas: _.chain(schemas)
         .keyBy('ref')
         .mapValues((def) => _.omit(def, 'ref')) // omit ref property
         .value(),
+      requestBodies: _.chain(requestBodies)
+        .keyBy('ref')
+        .mapValues((def) => _.omit(def, 'ref')) // omit ref property
+        .value(),
+      securitySchemes: {
+        'x-api-key': {
+          type: 'apiKey',
+          name: 'x-api-key',
+          in: 'header',
+        },
+      },
     },
   };
 }
@@ -50,8 +71,8 @@ function nameToRef(name: string, context: string = '') {
 }
 
 // adds definitions from path validation to schemas array and returns the path definition itself
-function routeToPathDef(route: Route, schemas: any[]) {
-  const { path, method, summary, description, tags, validation } = route;
+function routeToPathDef(route: Route, schemas: any[], requestBodies: any[]) {
+  const { path, method, summary, description, validation } = route;
   const operationId = route.operationId ? route.operationId : route.handler.name;
   const responses = route.responses ? route.responses : {
     200: { description: 'Success' }, // default
@@ -114,19 +135,24 @@ function routeToPathDef(route: Route, schemas: any[]) {
       const joi = validation.payload;
       const ref = createOpenAPIDef(`${nameToRef(operationId)}Payload`, joi, schemas);
       const joiDescription = _.get(joi, '_description') || `Request payload: ${operationId}`;
-      requestBody = {
+      requestBodies.push({
+        ref,
         description: joiDescription,
         content: {
           'application/json': {
             schema: {
               $ref: `#/components/schemas/${ref}`,
             },
-            examples: {}, // @TODO
           },
         },
-      };
+      });
+      requestBody = { $ref: `#/components/requestBodies/${ref}` };
     }
   }
+
+  const tags = _.chain(route.tags)
+    .map((tag) => _.get(tag, 'name', tag))
+    .value();
 
   return {
     path,

@@ -28,13 +28,18 @@ export interface HandlerResponse {
   };
 }
 
+export interface RouteTag {
+  name: string;
+  description: string;
+}
+
 export interface Route {
   method: string;
   path: string;
   operationId?: string;
   summary?: string;
   description?: string;
-  tags?: string[];
+  tags?: Array<RouteTag | string>;
   validation?: {
     headers?: { [name: string]: Joi.SchemaLike }
     pathParameters?: { [name: string]: Joi.SchemaLike }

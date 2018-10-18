@@ -9,6 +9,14 @@ const auth = {
   'x-api-key': validation.apiKey.required(),
 };
 
+// tags can be either a simple string or a tag object
+const tag = {
+  pets: {
+    name: 'pets',
+    description: 'Pet operations',
+  },
+};
+
 const routes: Route[] = [
   {
     method: 'GET',
@@ -16,7 +24,7 @@ const routes: Route[] = [
     handler: getPets,
     summary: 'List pets',
     description: 'Returns all pets in database',
-    tags: ['pets'],
+    tags: [tag.pets],
     validation: {
       headers: { ...auth },
       queryStringParameters: {
