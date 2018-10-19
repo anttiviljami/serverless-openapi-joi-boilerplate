@@ -31,7 +31,7 @@ async function handler(data) {
   fs.existsSync(outputPath) || fs.mkdirSync(outputPath);
 
   // generate swagger.json
-  const apispec = openapi.getOpenAPISpec(routes, ServiceEndpoint);
+  const apispec = openapi.openAPIDefinition(routes, ServiceEndpoint);
 
   // validate openapi and warn in case there are issues
   const { valid, errors } = validate(apispec, 3);
