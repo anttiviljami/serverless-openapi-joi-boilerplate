@@ -14,14 +14,14 @@ const { getAbsoluteFSPath } = require('swagger-ui-dist');
 const { validate } = require('openapi-schema-validation');
 const OpenAPIHandler = require('serverless-openapi-joi/handler').default;
 const routes = require('../dist/routes').default;
-const meta = require('../dist/api').default;
+const { info } = require('../dist/handler');
 
 async function handler(data) {
   const { ServiceEndpoint, SwaggerUIBucketName } = data;
 
   const openapi = new OpenAPIHandler({
-    ...meta,
-    baseurl: ServiceEndpoint,
+    info,
+    servers: [{ url: ServiceEndpoint }],
     routes,
   });
 
