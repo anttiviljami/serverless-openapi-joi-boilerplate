@@ -34,7 +34,7 @@ export async function migrate() {
 
 export async function api(event: Partial<APIGatewayProxyEvent>): Promise<any> {
   try {
-    const { statusCode, body, headers } = await openapi.routeEvent(event);
+    const { statusCode, body, headers } = await openapi.handler(event);
     return {
       statusCode,
       body,
