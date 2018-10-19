@@ -14,16 +14,16 @@ const { getAbsoluteFSPath } = require('swagger-ui-dist');
 const { validate } = require('openapi-schema-validation');
 const OpenAPIHandler = require('serverless-openapi-joi/handler').default;
 const routes = require('../dist/routes').default;
-const openapi = new OpenAPIHandler({
-  routes,
-  title: 'Example CRUD Pet API',
-  description: 'Example CRUD API to demonstrate auto-generated openapi docs with Joi',
-  version: '0.1.0',
-  baseurl: process.env.BASEURL,
-});
+const meta = require('../dist/api').default;
 
 async function handler(data) {
   const { ServiceEndpoint, SwaggerUIBucketName } = data;
+
+  const openapi = new OpenAPIHandler({
+    ...meta,
+    baseurl: ServiceEndpoint,
+    routes,
+  });
 
   // create static files directory if not exists
   const outputPath = SwaggerUIBucketName ?
