@@ -1,8 +1,8 @@
 import 'source-map-support/register';
 import Boom from 'boom';
 import { APIGatewayProxyEvent } from 'aws-lambda';
-import OpenAPIHandler, { OpenAPIInfo } from 'serverless-openapi-joi/handler';
-
+import { OpenAPIInfo } from 'serverless-openapi-joi/openapi';
+import OpenAPIHandler from 'serverless-openapi-joi/handler';
 import { instance as knex } from './util/knex';
 import { createLogger } from './util/logger';
 import routes from './routes';

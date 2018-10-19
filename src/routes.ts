@@ -10,12 +10,10 @@ const validation = {
     .example(1)
     .label('PetId'),
 
-  petPayload: Joi.object({
-    name: Joi.string()
-      .description('Name of the pet')
-      .example('Garfield')
-      .label('PetName'),
-  }).label('PetPayload'),
+  petName: Joi.string()
+    .description('Name of the pet')
+    .example('Garfield')
+    .label('PetName'),
 
   limit: Joi.number().integer().positive()
     .description('Number of items to return')
@@ -80,7 +78,9 @@ const routes: Route[] = [
     description: 'Crete a new pet into the database',
     tags: ['pets'],
     validation: {
-      payload: validation.petPayload,
+      payload: Joi.object({
+        name: validation.petName.required(),
+      }),
     },
     responses: {
       201: { description: 'Pet created succesfully' },
@@ -97,7 +97,9 @@ const routes: Route[] = [
       pathParameters: {
         id: validation.petId,
       },
-      payload: validation.petPayload,
+      payload: Joi.object({
+        name: validation.petName,
+      }),
     },
     responses: {
       200: { description: 'Pet updated succesfully' },

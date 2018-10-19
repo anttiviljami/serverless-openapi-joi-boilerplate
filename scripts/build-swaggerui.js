@@ -12,14 +12,14 @@ const mime = require('mime');
 const { S3 } = require('aws-sdk');
 const { getAbsoluteFSPath } = require('swagger-ui-dist');
 const { validate } = require('openapi-schema-validation');
-const OpenAPIHandler = require('serverless-openapi-joi/handler').default;
+const OpenAPIBuilder = require('serverless-openapi-joi/openapi').default;
 const routes = require('../dist/routes').default;
 const { info } = require('../dist/handler');
 
 async function handler(data) {
   const { ServiceEndpoint, SwaggerUIBucketName } = data;
 
-  const openapi = new OpenAPIHandler({
+  const openapi = new OpenAPIBuilder({
     info,
     servers: [{ url: ServiceEndpoint }],
     routes,
@@ -31,7 +31,7 @@ async function handler(data) {
   fs.existsSync(outputPath) || fs.mkdirSync(outputPath);
 
   // generate swagger.json
-  const apispec = openapi.openAPIDefinition(routes, ServiceEndpoint);
+  const apispec = openapi.getDefinition(routes, ServiceEndpoint);
 
   // validate openapi and warn in case there are issues
   const { valid, errors } = validate(apispec, 3);
