@@ -3,8 +3,6 @@
 
 Boilerplate serverless API project using [serverless-openapi-joi](https://github.com/anttiviljami/serverless-openapi-joi) plugin
 
-Inspired by Hapi and [hapi-swagger](https://github.com/glennjones/hapi-swagger)
-
 - [x] **Auto-generated OpenAPI v3 docs from code**
 - [x] **Joi validated requests with nice errors**
 - [x] **Swagger UI to view OpenAPI docs**, hosted on S3 as a static site ([example](http://openapi-joi-example-dev-swaggerui.s3-website-eu-west-1.amazonaws.com/))

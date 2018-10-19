@@ -42,7 +42,6 @@
   "dependencies": {
     "boom": "^7.2.0",
     "joi": "^13.7.0",
-    "joi-to-json-schema": "^3.4.0",
     "knex": "^0.15.2",
     "lodash": "^4.17.11",
     "pg": "^7.5.0",
@@ -68,7 +67,6 @@
     "prettier": "^1.14.3",
     "serverless": "^1.32.0",
     "serverless-offline": "^3.27.0",
-    "serverless-s3-sync": "^1.7.0",
     "serverless-stack-output": "^0.2.3",
     "swagger-ui-dist": "^3.19.3",
     "ts-jest": "^23.10.4",
