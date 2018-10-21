@@ -34,7 +34,6 @@ npm run dev # Serverless offline: http://localhost:9000, Swagger UI: http://loca
 - `src/**` – typescript source files
   - `src/handler.ts` – serverless main entrypoint, this is where all http requests and function invocations start from
   - `src/routes.ts` – where api routes and validations are defined
-  - `src/api.ts` - api metadata (title, description, version)
   - `src/handler/**` – handlers for when routing is finished, this is where control logic happens
   - `src/core/**` – core business logic + reading & writing to database happens here
   - `src/util/**` – boring utilities and helpers are stored here
